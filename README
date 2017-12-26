@@ -1,0 +1,84 @@
+N-Tuple Plagiarism Detector:
+
+The following program detects plagiarism between two files -
+file1 (file to check for plagiarism) and file2 (file to check against)
+
+The program works on the idea that an N-Tuple (ie "for a jog" is a 3-Tuple) in file1
+is plagiarized if there is the same N-Tuple in file2 with the addition that synonyms 
+(delivered via a synonym file) can be replaced, which is best illustrated in the following:
+
+synonyms: run jog
+file1: go for a jog
+file2: go for a run
+
+output: Plagiarized percentage: 100.00%
+
+Explanation: the first N-Tuple in file1 - "go for a" is 
+             equal to the N-Tuple "go for a" in file2
+             
+             the second N-Tuple in file1 - "for a jog" is
+             equal to the N-Tuple "for a run" in file2 as jog and run are synonyms
+             
+The program also solves situations where 2 or more words need to be
+replaced in a NTuple, for example
+
+synonyms: run jog sprint
+file 1: jog and jog
+file 2: run and sprint
+
+output: Plagiarized percentage: 100.00%
+
+Explanation: the first N-Tuple in file1 - "jog and jog" is 
+             equal to the N-Tuple "run and sprint" in file2
+             
+ 
+------------------------------------------------------------------------------------
+
+Design of Program and efficiency:
+
+
+for the synonyms file and SynonymDenomination object that maps each word to its synonyms is created
+
+for each of the other files, a set of their tuples are created and stored in a HashMap
+when checking for plagiarism, every tuple in file1 is checked to see if it is in file2 either
+in its original form or with 1 or more synonym replacements
+
+Runtime complexity: O(n*(k*tupleSize)) where k is the size of the largest synonym mapping and
+n is a function of the number of words in file1
+
+Space complexity: O(n+m+k) where:
+                                   n is a function of the size of the synonym file
+                                   m is a function of the size of file1
+                                   k is a function of the size of file2
+
+If there are concerns with memory, I believe an implementation with runtime O(n^2(k*tupleSize))
+can be used where every tuple in file1 is iteratively compared to tuples in file2.
+----------------------------------------------------------------------------------------
+
+The following information outlines assumptions made and format
+
+run the NTupleDetector file with the following argument format
+
+arguments format: <synonyms file> <file1> <file2> <NTuples>
+arguments format: <synonyms file> <file1> <file2> 
+
+If NTuples is not provided then default value is 3.
+
+-----------------------------------------------------------------------------------------
+
+I have made the following assumptions and hope that the robustness of my program allows for
+changes to be made as new information comes to light.
+
+Synonym file: the synonym file is formatted such that: 
+1. words appearing on each line are synonyms to each other
+2. and words are not repeated within the file.
+
+file1 & file2: My solution assumes that each word is seperated by whitespace which has 
+the following drawbacks:
+
+Thus a situation where punctuation is used, or any other similar situation, would fail as
+for example "for a run," is not the same as "for a run" in my program, while in reality that might 
+have been a case of plagiarism.
+
+My solution is case insensitive, for example: "For a run" is the same as "for a run"
+
